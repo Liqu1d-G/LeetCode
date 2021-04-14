@@ -152,6 +152,38 @@ int main(int argc, char **argv)
 
 
 
+**二分搜索法**
+
+``` double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size){
+    if(nums1Size>nums2Size)
+        return findMedianSortedArrays(nums2,nums2Size,nums1,nums1Size);
+    else{
+        int lmax1,lmax2,rmin1,rmin2;
+        int lo,hi,c1,c2;
+        lo=0;
+        hi=nums1Size;
+        while(lo<=hi){
+            c1=(lo+hi+1)/2;
+            c2=(nums1Size+nums2Size)/2-c1;
+            lmax1=(c1==0)?INT_MIN:nums1[c1-1];
+            rmin1=(c1==nums1Size)?INT_MAX:nums1[c1];
+            lmax2=(c2==0)?INT_MIN:nums2[c2-1];
+            rmin2=(c2==nums2Size)?INT_MAX:nums2[c2];
+            if(lmax1>rmin2)
+                hi=c1-1;
+            else if(lmax2>rmin1)
+                lo=c1+1;
+            else
+                break;
+        }
+        if((nums1Size+nums2Size)%2)
+            return rmin1>rmin2?rmin2:rmin1;
+        else
+            return ((rmin1>rmin2?rmin2:rmin1)+(lmax1>lmax2?lmax1:lmax2))/2.0;
+    }
+}
+```
+
 ## 总结
 
 这个是时间复杂度是`O(max(m,n))`的分。
@@ -163,3 +195,8 @@ int main(int argc, char **argv)
 ## 参考资料
 
 [二分搜索思路](https://github.com/halfrost/LeetCode-Go)
+
+[二分查找有几种写法？它们的区别是什么？](https://www.zhihu.com/question/36132386)
+
+[二分搜索题解](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/cyu-yan-er-fen-fa-by-pang-san-jin-3/)
+
