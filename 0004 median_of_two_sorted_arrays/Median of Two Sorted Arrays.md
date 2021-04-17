@@ -58,12 +58,20 @@
 
 但是如果要变成`O(log (m+n))`，就要用到另一种方法，看到 log 可以很自然地想到二分法二分搜索。
 
-关键的问题是如何切分数组 1 和数组 2 。其实就是如何切分数组 1 。先随便⼆分产⽣⼀个midA ，切分的线何时算满⾜了中位数的条件呢？即，线左边的数都⼩于右边的数，即，nums1[midA-1] ≤ nums2[midB] && nums2[midB-1] ≤ nums1[midA] 。如果这些条件都不满⾜，切分线就需要调整。如果 nums1[midA] < nums2[midB-1] ，说明 midA 这条线划分出来左边的数⼩了，切分线应该右移；如果 nums1[midA-1] > nums2[midB] ，说明 midA 这条线划分出来左边的数⼤了，切分线应该左移。经过多次调整以后，切分线总能找到满⾜条件的解。
-假设现在找到了切分的两条线了， 数组 1 在切分线两边的下标分别是 midA - 1 和 midA 。 数组 2 在切分线两边的下标分别是 midB - 1 和 midB 。最终合并成最终数组，如果数组⻓度是奇数，那么中位数就是 max(nums1[midA-1], nums2[midB-1]) 。如果数组⻓度是偶数，那么中间位置的两个数依次是： max(nums1[midA-1], nums2[midB-1]) 和 min(nums1[midA],nums2[midB]) ，那么中位数就是 (max(nums1[midA-1], nums2[midB-1]) +min(nums1[midA], nums2[midB])) / 2 。
+关键的问题是如何切分数组 1 和数组 2 。其实就是如何切分数组 1 。先随便⼆分产⽣⼀个midA ，切分的线何时算满⾜了中位数的条件呢？
+
+即，线左边的数都⼩于右边的数，即，**nums1[midA-1] ≤ nums2[midB] && nums2[midB-1] ≤ nums1[midA]** 。
+
+如果这些条件都不满⾜，切分线就需要调整。如果 nums1[midA] < nums2[midB-1] ，说明 midA 这条线划分出来左边的数⼩了，切分线应该右移；如果 nums1[midA-1] > nums2[midB] ，说明 midA 这条线划分出来左边的数⼤了，切分线应该左移。经过多次调整以后，切分线总能找到满⾜条件的解。
+假设现在找到了切分的两条线了， 数组 1 在切分线两边的下标分别是 midA - 1 和 midA 。 数组 2 在切分线两边的下标分别是 midB - 1 和 midB 。
+
+最终合并成最终数组，如果数组⻓度是奇数，那么中位数就是 max(nums1[midA-1], nums2[midB-1]) 。如果数组⻓度是偶数，那么中间位置的两个数依次是： max(nums1[midA-1], nums2[midB-1]) 和 min(nums1[midA],nums2[midB]) ，那么中位数就是 (max(nums1[midA-1], nums2[midB-1]) +min(nums1[midA], nums2[midB])) / 2 。
 
 ![IMG_0238(20210414-000612)](D:\1643076551\FileRecv\MobileFile\IMG_0238(20210414-000612).JPG)
 
 ## 代码
+
+**直接合并解法**
 
 ```c
 #include <stdio.h>
@@ -92,62 +100,6 @@ static double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int 
         return (nums[k-1] + nums[k-2]) / 2.0;
     }
 }
-
-int main(int argc, char **argv)
-{
-    int r1[] = {1};
-    int r2[] = {2};
- 
-    int n1 = sizeof(r1)/sizeof(r1[0]);
-    int n2 = sizeof(r2)/sizeof(r2[0]);
-
-    printf("Median is 1.5 = %f\n", findMedianSortedArrays(r1, n1, r2, n2));
-
-    int ar1[] = {1, 12, 15, 26, 38};
-    int ar2[] = {2, 13, 17, 30, 45, 50};
- 
-    n1 = sizeof(ar1)/sizeof(ar1[0]);
-    n2 = sizeof(ar2)/sizeof(ar2[0]);
-
-    printf("Median is 17 = %f\n", findMedianSortedArrays(ar1, n1, ar2, n2));
-
-    int ar11[] = {1, 12, 15, 26, 38};
-    int ar21[] = {2, 13, 17, 30, 45 };
- 
-    n1 = sizeof(ar11)/sizeof(ar11[0]);
-    n2 = sizeof(ar21)/sizeof(ar21[0]);
-
-    printf("Median is 16 = %f\n", findMedianSortedArrays(ar11, n1, ar21, n2));
-
-    int a1[] = {1, 2, 5, 6, 8 };
-    int a2[] = {13, 17, 30, 45, 50};
- 
-    n1 = sizeof(a1)/sizeof(a1[0]);
-    n2 = sizeof(a2)/sizeof(a2[0]);
-
-    printf("Median is 10.5 = %f\n", findMedianSortedArrays(a1, n1, a2, n2));
-
-    int a10[] = {1, 2, 5, 6, 8, 9, 10 };
-    int a20[] = {13, 17, 30, 45, 50};
- 
-    n1 = sizeof(a10)/sizeof(a10[0]);
-    n2 = sizeof(a20)/sizeof(a20[0]);
-
-    printf("Median is 9.5 = %f\n", findMedianSortedArrays(a10, n1, a20, n2));
-
-    int a11[] = {1, 2, 5, 6, 8, 9 };
-    int a21[] = {13, 17, 30, 45, 50};
- 
-    n1 = sizeof(a11)/sizeof(a11[0]);
-    n2 = sizeof(a21)/sizeof(a21[0]);
-
-    printf("Median is 9 = %f\n", findMedianSortedArrays(a11, n1, a21, n2));
-
-    int a12[] = {1, 2, 5, 6, 8 };
-    int a22[] = {11, 13, 17, 30, 45, 50};
-    return 0;
-}
-
 ```
 
 
@@ -155,6 +107,8 @@ int main(int argc, char **argv)
 **二分搜索法**
 
 ``` double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size){
+static double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size)
+{
     if(nums1Size>nums2Size)
         return findMedianSortedArrays(nums2,nums2Size,nums1,nums1Size);
     else{
@@ -186,17 +140,23 @@ int main(int argc, char **argv)
 
 ## 总结
 
-这个是时间复杂度是`O(max(m,n))`的分。
+这个是直接合并法，时间复杂度是`O(max(m,n))`得分。
 
 ![image-20210414001123310](C:\Users\乔翯\AppData\Roaming\Typora\typora-user-images\image-20210414001123310.png)
+
+二分搜索法，时间复杂度为 `O(log (m+n))` 得分。
+
+![image-20210417161755213](C:\Users\乔翯\AppData\Roaming\Typora\typora-user-images\image-20210417161755213.png)
+
+时间差别不大的原因可能是数组长度不够。
 
 
 
 ## 参考资料
 
-[二分搜索思路](https://github.com/halfrost/LeetCode-Go)
+[本题中的二分搜索思路](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/cyu-yan-er-fen-fa-by-pang-san-jin-3/)
 
-[二分查找有几种写法？它们的区别是什么？](https://www.zhihu.com/question/36132386)
+[二分查找算法思想](https://github.com/labuladong/fucking-algorithm/blob/master/%E7%AE%97%E6%B3%95%E6%80%9D%E7%BB%B4%E7%B3%BB%E5%88%97/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E8%AF%A6%E8%A7%A3.md)
 
 [二分搜索题解](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/cyu-yan-er-fen-fa-by-pang-san-jin-3/)
 
